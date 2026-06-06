@@ -452,3 +452,433 @@
 :root:not([data-theme="dark"]) .theme-toggle__icon--light {
   display: inline;
 }
+
+/* --------------------------------------------------------------------------
+   Tabs — Mode-switching tabbed interface
+   -------------------------------------------------------------------------- */
+.tabs {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  border-bottom: 2px solid var(--glass-border);
+  padding-bottom: var(--space-2);
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-6);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  cursor: pointer;
+  transition: color var(--transition-fast), background var(--transition-fast);
+  min-height: 44px;
+}
+
+.tab:hover {
+  color: var(--color-primary);
+  background: var(--glass-bg);
+}
+
+.tab--active {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  background: var(--glass-bg);
+  border-bottom: 2px solid var(--color-primary);
+  margin-bottom: -4px;
+}
+
+/* --------------------------------------------------------------------------
+   Weekday Checkboxes — Glassmorphism-styled day-of-week selectors
+   -------------------------------------------------------------------------- */
+.weekday-checkboxes {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.weekday-checkbox {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.weekday-checkbox__input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.weekday-checkbox__label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.weekday-checkbox__input:checked + .weekday-checkbox__label {
+  background: var(--gradient-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  transform: translateY(-1px);
+}
+
+.weekday-checkbox__input:focus-visible + .weekday-checkbox__label {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.weekday-checkbox__label:hover {
+  border-color: var(--color-primary-light);
+  box-shadow: var(--shadow-sm);
+}
+
+/* --------------------------------------------------------------------------
+   Select Fields — Styled dropdown selects
+   -------------------------------------------------------------------------- */
+.select-field {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-4) center;
+  padding-right: var(--space-10);
+  cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   Form Group Thirds — Three-column form layout
+   -------------------------------------------------------------------------- */
+.form-group--half {
+  flex: 1;
+  min-width: 0;
+}
+
+.form-group--third {
+  flex: 1;
+  min-width: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Input Wrapper — Container for input + adjacent button
+   -------------------------------------------------------------------------- */
+.input-wrapper {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.input-wrapper .input-field {
+  flex: 1;
+}
+
+.input-wrapper .btn--today {
+  flex-shrink: 0;
+  font-size: var(--font-size-sm);
+  padding: var(--space-2) var(--space-3);
+  min-height: 38px;
+}
+
+/* --------------------------------------------------------------------------
+   Toggle Switch — For include/exclude end date
+   -------------------------------------------------------------------------- */
+.form-group--toggle {
+  margin-bottom: var(--space-4);
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  cursor: pointer;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+}
+
+.toggle-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-track {
+  display: block;
+  width: 44px;
+  height: 24px;
+  background: var(--color-text-secondary);
+  border-radius: var(--radius-full);
+  transition: background var(--transition-fast);
+  position: relative;
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: #ffffff;
+  border-radius: 50%;
+  transition: transform var(--transition-fast);
+}
+
+.toggle-input:checked + .toggle-track {
+  background: var(--color-primary);
+}
+
+.toggle-input:checked + .toggle-track .toggle-thumb {
+  transform: translateX(20px);
+}
+
+.toggle-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   Weekday Results — Count display rows
+   -------------------------------------------------------------------------- */
+.weekday-results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.weekday-result-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+}
+
+.weekday-result-name {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.weekday-result-count {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* --------------------------------------------------------------------------
+   Mini Calendar — Compact calendar grid for results display
+   -------------------------------------------------------------------------- */
+.mini-calendar-container {
+  overflow-x: auto;
+}
+
+.mini-calendar {
+  display: inline-block;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  min-width: 280px;
+}
+
+.mini-cal-title {
+  text-align: center;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-3);
+}
+
+.mini-cal-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
+}
+
+.mini-cal-day-name {
+  text-align: center;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+}
+
+.mini-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-1);
+}
+
+.mini-cal-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+}
+
+.mini-cal-cell--empty {
+  visibility: hidden;
+}
+
+.mini-cal-cell--in-range {
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.mini-cal-cell--highlighted {
+  background: var(--gradient-primary);
+  color: #ffffff;
+  font-weight: var(--font-weight-semibold);
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+}
+
+.mini-cal-cell--target {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.mini-cal-cell--same-weekday {
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+/* --------------------------------------------------------------------------
+   Result Sections — Shared result display sections
+   -------------------------------------------------------------------------- */
+.result-total {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.result-total--warning .result-value--icon {
+  font-size: var(--font-size-3xl);
+}
+
+.result-section-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-3);
+}
+
+.result-breakdown {
+  margin-bottom: var(--space-6);
+}
+
+.result-combined {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-4);
+}
+
+.result-units {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.result-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  min-width: 80px;
+}
+
+.result-unit-value {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.result-unit-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+}
+
+.result-time-equivalents {
+  margin-bottom: var(--space-6);
+}
+
+.result-date-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.result-date-row {
+  display: flex;
+  gap: var(--space-3);
+  align-items: baseline;
+}
+
+.result-date-label {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  min-width: 50px;
+}
+
+.result-date-value {
+  color: var(--color-text-primary);
+}
+
+.result-note {
+  margin-top: var(--space-3);
+}
+
+.result-not-found-message {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.result-not-found-message strong {
+  color: var(--color-text-primary);
+}
+
+.result-calendar {
+  margin-bottom: var(--space-6);
+}
