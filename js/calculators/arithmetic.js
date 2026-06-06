@@ -3,9 +3,10 @@
  * Supports chaining multiple operations and business day toggle.
  * Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6
  */
-import { parseDate, formatDate } from '../core/date-parser.js';
+import { parseDate, formatDate, validateDate } from '../core/date-parser.js';
 import { addToDate, subtractFromDate, getDayOfWeekName, addBusinessDays } from '../core/date-calc.js';
 import { validateDateInput, validateNumericInput } from '../core/validators.js';
+import DateInputComponent from '../ui/date-input.js';
 
 const MAX_OPERATIONS = 10;
 
@@ -46,23 +47,7 @@ const ArithmeticCalculator = {
   _renderForm() {
     this._calculatorCard.innerHTML = `
       <form id="arithmetic-form" class="arithmetic-form" novalidate>
-        <div class="form-group">
-          <label class="form-label" for="arith-start-date">Start Date</label>
-          <div class="input-wrapper">
-            <input
-              type="text"
-              id="arith-start-date"
-              class="input-field glass-input"
-              placeholder="MM/DD/YYYY or YYYY-MM-DD"
-              autocomplete="off"
-              aria-describedby="arith-start-date-error"
-            />
-            <button type="button" class="btn btn--ghost btn--today" id="arith-today-btn" aria-label="Set start date to today">
-              Today
-            </button>
-          </div>
-          <span id="arith-start-date-error" class="error-message" role="alert" hidden></span>
-        </div>
+        ${DateInputComponent.render({ id: 'arith-start-date', label: 'Start Date' })}
 
         <div class="form-group">
           <label class="form-label">Operations</label>
@@ -147,6 +132,9 @@ const ArithmeticCalculator = {
     const form = document.getElementById('arithmetic-form');
     if (!form) return;
 
+    // Initialize DateInputComponent listeners (calendar picker, today buttons, auto-tab)
+    DateInputComponent.initListeners(this._calculatorCard);
+
     // Form submission
     form.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -192,14 +180,6 @@ const ArithmeticCalculator = {
     if (addOpBtn) {
       addOpBtn.addEventListener('click', () => {
         this._addOperationRow();
-      });
-    }
-
-    // Today button
-    const todayBtn = document.getElementById('arith-today-btn');
-    if (todayBtn) {
-      todayBtn.addEventListener('click', () => {
-        this._setToday();
       });
     }
 
@@ -272,13 +252,18 @@ const ArithmeticCalculator = {
   calculate() {
     this._clearAllErrors();
 
-    // 1. Validate start date
-    const startInput = document.getElementById('arith-start-date');
-    const startValue = startInput ? startInput.value : '';
-    const startValidation = validateDateInput(startValue, 'Start date');
+    // 1. Validate start date using DateInputComponent
+    const startDateValue = DateInputComponent.getValue('arith-start-date');
 
+    if (!startDateValue) {
+      DateInputComponent.showError('arith-start-date', 'Start date is required');
+      this._hideResult();
+      return;
+    }
+
+    const startValidation = validateDate(startDateValue.year, startDateValue.month, startDateValue.day);
     if (!startValidation.valid) {
-      this._showFieldError('arith-start-date', startValidation.error);
+      DateInputComponent.showError('arith-start-date', startValidation.error);
       this._hideResult();
       return;
     }
@@ -314,7 +299,7 @@ const ArithmeticCalculator = {
     }
 
     // 3. Apply operations sequentially
-    let currentDate = { ...startValidation.date };
+    let currentDate = { ...startDateValue };
     const appliedOps = [];
 
     for (const op of validatedOps) {
@@ -344,7 +329,7 @@ const ArithmeticCalculator = {
     }
 
     // 4. Render result
-    this._renderResult(startValidation.date, currentDate, appliedOps);
+    this._renderResult(startDateValue, currentDate, appliedOps);
   },
 
   /**
@@ -507,14 +492,8 @@ const ArithmeticCalculator = {
    * Clear all error states from the form.
    */
   _clearAllErrors() {
-    // Clear start date error
-    const startInput = document.getElementById('arith-start-date');
-    const startError = document.getElementById('arith-start-date-error');
-    if (startInput) startInput.classList.remove('input-field--error');
-    if (startError) {
-      startError.textContent = '';
-      startError.hidden = true;
-    }
+    // Clear start date error via DateInputComponent
+    DateInputComponent.clearError('arith-start-date');
 
     // Clear operation row errors
     const opsContainer = document.getElementById('arith-operations-container');
@@ -540,32 +519,12 @@ const ArithmeticCalculator = {
   },
 
   /**
-   * Set the start date input to today's date.
-   */
-  _setToday() {
-    const startInput = document.getElementById('arith-start-date');
-    if (startInput) {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const day = String(now.getDate()).padStart(2, '0');
-      startInput.value = `${year}-${month}-${day}`;
-      // Clear any existing error
-      const startError = document.getElementById('arith-start-date-error');
-      if (startInput) startInput.classList.remove('input-field--error');
-      if (startError) {
-        startError.textContent = '';
-        startError.hidden = true;
-      }
-    }
-  },
-
-  /**
    * Reset the form to its initial state.
    */
   _clearForm() {
-    const startInput = document.getElementById('arith-start-date');
-    if (startInput) startInput.value = '';
+    // Clear the DateInputComponent fields
+    DateInputComponent.setValue('arith-start-date', { year: '', month: '', day: '' });
+    DateInputComponent.clearError('arith-start-date');
 
     this._operations = [{ type: 'add', unit: 'days', value: '' }];
     this._useBusinessDays = false;

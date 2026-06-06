@@ -3,10 +3,11 @@
  * Supports holiday presets for 12 countries and custom recurring holidays.
  * Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6
  */
-import { parseDate, formatDate } from '../core/date-parser.js';
+import { parseDate, formatDate, validateDate } from '../core/date-parser.js';
 import { countBusinessDays, addBusinessDays, getDayOfWeekName, getDayOfWeek } from '../core/date-calc.js';
 import { validateDateInput, validateNumericInput } from '../core/validators.js';
 import { getSupportedCountries, getHolidaySet, getHolidays } from '../core/holiday-db.js';
+import DateInputComponent from '../ui/date-input.js';
 
 const BusinessDayCalculator = {
   _mode: 'count', // 'count' or 'add'
@@ -61,39 +62,10 @@ const BusinessDayCalculator = {
       <form id="business-days-form" class="business-days-form" novalidate>
         <div class="form-row">
           <div class="form-group form-group--half">
-            <label class="form-label" for="start-date">Start Date</label>
-            <div class="input-wrapper">
-              <input
-                type="text"
-                id="start-date"
-                class="input-field glass-input"
-                placeholder="MM/DD/YYYY or YYYY-MM-DD"
-                autocomplete="off"
-                aria-describedby="start-date-error"
-              />
-              <button type="button" class="btn btn--ghost btn--today" data-target="start-date" aria-label="Set start date to today">
-                Today
-              </button>
-            </div>
-            <span id="start-date-error" class="error-message" role="alert" hidden></span>
+            ${DateInputComponent.render({ id: 'start-date', label: 'Start Date' })}
           </div>
-
           <div class="form-group form-group--half">
-            <label class="form-label" for="end-date">End Date</label>
-            <div class="input-wrapper">
-              <input
-                type="text"
-                id="end-date"
-                class="input-field glass-input"
-                placeholder="MM/DD/YYYY or YYYY-MM-DD"
-                autocomplete="off"
-                aria-describedby="end-date-error"
-              />
-              <button type="button" class="btn btn--ghost btn--today" data-target="end-date" aria-label="Set end date to today">
-                Today
-              </button>
-            </div>
-            <span id="end-date-error" class="error-message" role="alert" hidden></span>
+            ${DateInputComponent.render({ id: 'end-date', label: 'End Date' })}
           </div>
         </div>
 
@@ -135,21 +107,7 @@ const BusinessDayCalculator = {
       <form id="business-days-form" class="business-days-form" novalidate>
         <div class="form-row">
           <div class="form-group form-group--half">
-            <label class="form-label" for="start-date">Start Date</label>
-            <div class="input-wrapper">
-              <input
-                type="text"
-                id="start-date"
-                class="input-field glass-input"
-                placeholder="MM/DD/YYYY or YYYY-MM-DD"
-                autocomplete="off"
-                aria-describedby="start-date-error"
-              />
-              <button type="button" class="btn btn--ghost btn--today" data-target="start-date" aria-label="Set start date to today">
-                Today
-              </button>
-            </div>
-            <span id="start-date-error" class="error-message" role="alert" hidden></span>
+            ${DateInputComponent.render({ id: 'start-date', label: 'Start Date' })}
           </div>
 
           <div class="form-group form-group--half">
@@ -240,6 +198,9 @@ const BusinessDayCalculator = {
       });
     });
 
+    // Initialize DateInputComponent listeners (calendar picker, today buttons, auto-tab)
+    DateInputComponent.initListeners(this._calculatorCard);
+
     // Form submission
     const form = document.getElementById('business-days-form');
     if (form) {
@@ -252,23 +213,6 @@ const BusinessDayCalculator = {
         }
       });
     }
-
-    // Today buttons
-    const todayButtons = this._calculatorCard.querySelectorAll('.btn--today');
-    todayButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const targetId = btn.getAttribute('data-target');
-        const input = document.getElementById(targetId);
-        if (input) {
-          const now = new Date();
-          const year = now.getFullYear();
-          const month = String(now.getMonth() + 1).padStart(2, '0');
-          const day = String(now.getDate()).padStart(2, '0');
-          input.value = `${year}-${month}-${day}`;
-          this._clearFieldError(targetId);
-        }
-      });
-    });
 
     // Clear button
     const clearBtn = document.getElementById('clear-btn');
@@ -419,28 +363,34 @@ const BusinessDayCalculator = {
   countBetween() {
     this._clearAllErrors();
 
-    const startInput = document.getElementById('start-date');
-    const endInput = document.getElementById('end-date');
-
-    const startValue = startInput ? startInput.value : '';
-    const endValue = endInput ? endInput.value : '';
+    // Get date values from DateInputComponent
+    const startDateValue = DateInputComponent.getValue('start-date');
+    const endDateValue = DateInputComponent.getValue('end-date');
 
     // Validate start date
-    const startValidation = validateDateInput(startValue, 'Start date');
+    if (!startDateValue) {
+      DateInputComponent.showError('start-date', 'Start date is required');
+      return;
+    }
+    const startValidation = validateDate(startDateValue.year, startDateValue.month, startDateValue.day);
     if (!startValidation.valid) {
-      this._showFieldError('start-date', startValidation.error);
+      DateInputComponent.showError('start-date', startValidation.error);
       return;
     }
 
     // Validate end date
-    const endValidation = validateDateInput(endValue, 'End date');
+    if (!endDateValue) {
+      DateInputComponent.showError('end-date', 'End date is required');
+      return;
+    }
+    const endValidation = validateDate(endDateValue.year, endDateValue.month, endDateValue.day);
     if (!endValidation.valid) {
-      this._showFieldError('end-date', endValidation.error);
+      DateInputComponent.showError('end-date', endValidation.error);
       return;
     }
 
-    const startDate = startValidation.date;
-    const endDate = endValidation.date;
+    const startDate = startDateValue;
+    const endDate = endDateValue;
 
     // Read country from dropdown (in case user changed without triggering change event)
     const countrySelect = document.getElementById('country-select');
@@ -471,16 +421,20 @@ const BusinessDayCalculator = {
   addDays() {
     this._clearAllErrors();
 
-    const startInput = document.getElementById('start-date');
     const daysInput = document.getElementById('business-days-count');
-
-    const startValue = startInput ? startInput.value : '';
     const daysValue = daysInput ? daysInput.value : '';
 
+    // Get start date from DateInputComponent
+    const startDateValue = DateInputComponent.getValue('start-date');
+
     // Validate start date
-    const startValidation = validateDateInput(startValue, 'Start date');
+    if (!startDateValue) {
+      DateInputComponent.showError('start-date', 'Start date is required');
+      return;
+    }
+    const startValidation = validateDate(startDateValue.year, startDateValue.month, startDateValue.day);
     if (!startValidation.valid) {
-      this._showFieldError('start-date', startValidation.error);
+      DateInputComponent.showError('start-date', startValidation.error);
       return;
     }
 
@@ -496,7 +450,7 @@ const BusinessDayCalculator = {
       return;
     }
 
-    const startDate = startValidation.date;
+    const startDate = startDateValue;
     const businessDaysToAdd = daysValidation.value;
 
     // Read country from dropdown
@@ -775,8 +729,8 @@ const BusinessDayCalculator = {
    * Clear all validation errors in the form.
    */
   _clearAllErrors() {
-    this._clearFieldError('start-date');
-    this._clearFieldError('end-date');
+    DateInputComponent.clearError('start-date');
+    DateInputComponent.clearError('end-date');
     this._clearFieldError('business-days-count');
   },
 
@@ -784,13 +738,15 @@ const BusinessDayCalculator = {
    * Reset the form and result to initial state.
    */
   _clearForm() {
-    const startInput = document.getElementById('start-date');
-    const endInput = document.getElementById('end-date');
+    // Clear DateInputComponent fields
+    DateInputComponent.setValue('start-date', { year: '', month: '', day: '' });
+    DateInputComponent.clearError('start-date');
+    DateInputComponent.setValue('end-date', { year: '', month: '', day: '' });
+    DateInputComponent.clearError('end-date');
+
     const daysInput = document.getElementById('business-days-count');
     const countrySelect = document.getElementById('country-select');
 
-    if (startInput) startInput.value = '';
-    if (endInput) endInput.value = '';
     if (daysInput) daysInput.value = '';
     if (countrySelect) countrySelect.value = '';
 

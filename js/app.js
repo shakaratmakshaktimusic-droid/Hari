@@ -82,6 +82,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Deferred initialization placeholder
     }, 2000);
   }
+
+  // 8. Register service worker for offline support
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(err => {
+      console.log('[App] Service worker registration failed:', err);
+    });
+  }
 });
 
 // Export for testing

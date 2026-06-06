@@ -6,9 +6,10 @@
  * 1. Count Mode - Count occurrences of specific weekdays within a date range
  * 2. Nth Weekday Mode - Find the Nth occurrence of a weekday in a given month
  */
-import { parseDate, formatDate, getDaysInMonth } from '../core/date-parser.js';
+import { parseDate, formatDate, getDaysInMonth, validateDate } from '../core/date-parser.js';
 import { countWeekdays, findNthWeekday, getDayOfWeekName, getDayOfWeek, dateToSerial, serialToDate } from '../core/date-calc.js';
 import { validateDateInput, validateNumericInput } from '../core/validators.js';
+import DateInputComponent from '../ui/date-input.js';
 
 const WEEKDAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const WEEKDAY_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -98,39 +99,10 @@ const WeekdayCalculator = {
       <form id="weekday-count-form" class="weekday-form" novalidate>
         <div class="form-row">
           <div class="form-group form-group--half">
-            <label class="form-label" for="count-start-date">Start Date</label>
-            <div class="input-wrapper">
-              <input
-                type="text"
-                id="count-start-date"
-                class="input-field glass-input"
-                placeholder="MM/DD/YYYY or YYYY-MM-DD"
-                autocomplete="off"
-                aria-describedby="count-start-date-error"
-              />
-              <button type="button" class="btn btn--ghost btn--today" data-target="count-start-date" aria-label="Set start date to today">
-                Today
-              </button>
-            </div>
-            <span id="count-start-date-error" class="error-message" role="alert" hidden></span>
+            ${DateInputComponent.render({ id: 'count-start-date', label: 'Start Date' })}
           </div>
-
           <div class="form-group form-group--half">
-            <label class="form-label" for="count-end-date">End Date</label>
-            <div class="input-wrapper">
-              <input
-                type="text"
-                id="count-end-date"
-                class="input-field glass-input"
-                placeholder="MM/DD/YYYY or YYYY-MM-DD"
-                autocomplete="off"
-                aria-describedby="count-end-date-error"
-              />
-              <button type="button" class="btn btn--ghost btn--today" data-target="count-end-date" aria-label="Set end date to today">
-                Today
-              </button>
-            </div>
-            <span id="count-end-date-error" class="error-message" role="alert" hidden></span>
+            ${DateInputComponent.render({ id: 'count-end-date', label: 'End Date' })}
           </div>
         </div>
 
@@ -247,22 +219,8 @@ const WeekdayCalculator = {
       });
     }
 
-    // Today buttons
-    const todayButtons = this._tabPanel.querySelectorAll('.btn--today');
-    todayButtons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const targetId = btn.getAttribute('data-target');
-        const input = document.getElementById(targetId);
-        if (input) {
-          const now = new Date();
-          const year = now.getFullYear();
-          const month = String(now.getMonth() + 1).padStart(2, '0');
-          const day = String(now.getDate()).padStart(2, '0');
-          input.value = `${year}-${month}-${day}`;
-          this._clearFieldError(targetId);
-        }
-      });
-    });
+    // Initialize DateInputComponent listeners (calendar picker, today buttons, auto-tab)
+    DateInputComponent.initListeners(this._tabPanel);
 
     // Clear button
     const clearBtn = document.getElementById('count-clear-btn');
@@ -301,23 +259,29 @@ const WeekdayCalculator = {
   calculateCount() {
     this._clearAllCountErrors();
 
-    const startInput = document.getElementById('count-start-date');
-    const endInput = document.getElementById('count-end-date');
-
-    const startValue = startInput ? startInput.value : '';
-    const endValue = endInput ? endInput.value : '';
+    // Get date values from DateInputComponent
+    const startDateValue = DateInputComponent.getValue('count-start-date');
+    const endDateValue = DateInputComponent.getValue('count-end-date');
 
     // Validate start date
-    const startValidation = validateDateInput(startValue, 'Start date');
+    if (!startDateValue) {
+      DateInputComponent.showError('count-start-date', 'Start date is required');
+      return;
+    }
+    const startValidation = validateDate(startDateValue.year, startDateValue.month, startDateValue.day);
     if (!startValidation.valid) {
-      this._showFieldError('count-start-date', startValidation.error);
+      DateInputComponent.showError('count-start-date', startValidation.error);
       return;
     }
 
     // Validate end date
-    const endValidation = validateDateInput(endValue, 'End date');
+    if (!endDateValue) {
+      DateInputComponent.showError('count-end-date', 'End date is required');
+      return;
+    }
+    const endValidation = validateDate(endDateValue.year, endDateValue.month, endDateValue.day);
     if (!endValidation.valid) {
-      this._showFieldError('count-end-date', endValidation.error);
+      DateInputComponent.showError('count-end-date', endValidation.error);
       return;
     }
 
@@ -330,8 +294,8 @@ const WeekdayCalculator = {
       return;
     }
 
-    const startDate = startValidation.date;
-    const endDate = endValidation.date;
+    const startDate = startDateValue;
+    const endDate = endDateValue;
 
     // Calculate weekday counts
     const results = countWeekdays(startDate, endDate, selectedWeekdays);
@@ -678,8 +642,8 @@ const WeekdayCalculator = {
    * Clear all count form errors.
    */
   _clearAllCountErrors() {
-    this._clearFieldError('count-start-date');
-    this._clearFieldError('count-end-date');
+    DateInputComponent.clearError('count-start-date');
+    DateInputComponent.clearError('count-end-date');
     this._clearFieldError('weekday-selection');
   },
 
