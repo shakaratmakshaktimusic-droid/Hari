@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DateCalc Pro - Countdown Timer. Create live countdowns to important dates and events.">
+    <meta name="theme-color" content="#6366f1">
+    <title>Countdown Timer - DateCalc Pro</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/glassmorphism.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/navigation.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar__brand">
+            <a href="index.html" class="navbar__logo">DateCalc Pro</a>
+        </div>
+        <button class="navbar__hamburger" id="hamburger" aria-label="Toggle navigation menu">
+            <span class="navbar__hamburger-line"></span>
+            <span class="navbar__hamburger-line"></span>
+            <span class="navbar__hamburger-line"></span>
+        </button>
+        <ul class="navbar__links" id="nav-links">
+            <li><a href="index.html" class="navbar__link">Day of Week</a></li>
+            <li><a href="duration.html" class="navbar__link">Duration</a></li>
+            <li><a href="weekday.html" class="navbar__link">Weekday</a></li>
+            <li><a href="arithmetic.html" class="navbar__link">Arithmetic</a></li>
+            <li><a href="business-days.html" class="navbar__link">Business Days</a></li>
+            <li><a href="week-number.html" class="navbar__link">Week Number</a></li>
+            <li><a href="countdown.html" class="navbar__link navbar__link--active">Countdown</a></li>
+            <li><a href="timezone.html" class="navbar__link">Time Zones</a></li>
+            <li><a href="batch.html" class="navbar__link">Batch</a></li>
+        </ul>
+    </nav>
+
+    <!-- Mobile Drawer Overlay -->
+    <div class="navbar__overlay" id="nav-overlay"></div>
+
+    <!-- Main Content -->
+    <main class="main-content" id="main-content">
+        <section class="calculator-section">
+            <div class="container">
+                <h1 class="page-title">Countdown Timer</h1>
+                <p class="page-subtitle">Create live countdowns to important dates and events</p>
+                <div class="calculator-card card" id="calculator-card">
+                    <!-- Countdown creation form will be rendered by JS -->
+                </div>
+                <div class="countdowns-list" id="countdowns-list">
+                    <!-- Active countdowns will be rendered by JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/app.js" type="module"></script>
+    <script src="js/calculators/countdown.js" type="module"></script>
+</body>
+</html>

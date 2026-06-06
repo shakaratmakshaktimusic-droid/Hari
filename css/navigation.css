@@ -1,0 +1,202 @@
+/* ==========================================================================
+   Navigation Styles
+   Fixed top navbar with glassmorphism, mobile hamburger menu, and drawer.
+   All values reference design tokens from variables.css.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Navbar — Fixed top navigation bar
+   -------------------------------------------------------------------------- */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: var(--z-navbar);
+  padding: var(--space-4) var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* --------------------------------------------------------------------------
+   Navbar Brand — Logo and site title
+   -------------------------------------------------------------------------- */
+.navbar__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.navbar__logo {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  text-decoration: none;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: opacity var(--transition-fast);
+}
+
+.navbar__logo:hover {
+  opacity: 0.8;
+  text-decoration: none;
+}
+
+/* --------------------------------------------------------------------------
+   Navbar Links — Horizontal desktop link list
+   -------------------------------------------------------------------------- */
+.navbar__links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  list-style: none;
+}
+
+.navbar__link {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast), color var(--transition-fast);
+  min-height: 44px;
+}
+
+.navbar__link:hover {
+  background: var(--glass-bg);
+  text-decoration: none;
+}
+
+/* Active navigation link — gradient background */
+.navbar__link--active {
+  background: var(--gradient-primary);
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+}
+
+.navbar__link--active:hover {
+  background: var(--gradient-primary);
+  opacity: 0.9;
+}
+
+/* --------------------------------------------------------------------------
+   Hamburger Menu — Hidden by default, visible on mobile
+   -------------------------------------------------------------------------- */
+.navbar__hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: var(--space-2);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+  z-index: calc(var(--z-navbar) + 2);
+}
+
+.navbar__hamburger:hover {
+  background: var(--glass-bg);
+}
+
+/* Individual hamburger lines */
+.navbar__hamburger-line {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--color-text-primary);
+  border-radius: var(--radius-full);
+  transition: transform var(--transition-normal), opacity var(--transition-normal);
+}
+
+/* Hamburger lines transform to X when active */
+.navbar__hamburger--active .navbar__hamburger-line:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.navbar__hamburger--active .navbar__hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar__hamburger--active .navbar__hamburger-line:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* --------------------------------------------------------------------------
+   Overlay — Full-screen dark backdrop when mobile drawer is open
+   -------------------------------------------------------------------------- */
+.navbar__overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-normal), visibility var(--transition-normal);
+  z-index: calc(var(--z-navbar) - 1);
+}
+
+.navbar__overlay--visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* --------------------------------------------------------------------------
+   Mobile Drawer Styles (activated via media query in responsive.css)
+   -------------------------------------------------------------------------- */
+.navbar__links--mobile {
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 300px;
+  height: 100vh;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-1);
+  padding: 80px var(--space-6) var(--space-6);
+  background: var(--color-bg-secondary);
+  box-shadow: var(--shadow-xl);
+  transition: right var(--transition-slow);
+  overflow-y: auto;
+  z-index: calc(var(--z-navbar) + 1);
+}
+
+.navbar__links--mobile.navbar__links--open {
+  right: 0;
+}
+
+.navbar__links--mobile .navbar__link {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-base);
+  border-radius: var(--radius-md);
+  width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Theme Toggle Button (in navbar)
+   -------------------------------------------------------------------------- */
+.navbar__theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.navbar__theme-toggle:hover {
+  background: var(--glass-bg);
+}

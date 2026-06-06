@@ -1,0 +1,11 @@
+{
+  "name": "date-calculator-website",
+  "version": "1.0.0",
+  "description": "Premium date calculator website",
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/.bin/jest --config jest.config.js",
+    "test:unit": "node --test tests/"
+  },
+  "devDependencies": {}
+}

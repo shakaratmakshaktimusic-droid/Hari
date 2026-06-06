@@ -1,0 +1,80 @@
+/* ==========================================================================
+   Dark Theme — Additional Component Overrides
+   Primary dark theme is handled via [data-theme="dark"] in variables.css.
+   This file provides extra component-specific dark-mode styling.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Dark Theme — Component-specific overrides
+   -------------------------------------------------------------------------- */
+
+/* Card styling adjustments for dark mode */
+[data-theme="dark"] .calculator-card {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--glass-border);
+}
+
+[data-theme="dark"] .result-card {
+  background: rgba(30, 41, 59, 0.9);
+  border-left-color: var(--color-success);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Input fields in dark mode */
+[data-theme="dark"] .input-field {
+  background: var(--color-bg-secondary);
+  box-shadow: var(--shadow-neu-light);
+}
+
+[data-theme="dark"] .input-field:focus {
+  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.3),
+              inset -4px -4px 8px rgba(50, 60, 80, 0.15);
+}
+
+/* Navbar dark mode specifics */
+[data-theme="dark"] .navbar {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile drawer in dark mode */
+[data-theme="dark"] .navbar__links--mobile {
+  background: var(--color-bg-primary);
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.5);
+}
+
+/* Badge adjustments for dark mode */
+[data-theme="dark"] .badge {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Tooltip dark mode */
+[data-theme="dark"] .tooltip::after {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--glass-border);
+  color: var(--color-text-primary);
+}
+
+/* Scrollbar dark mode */
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: var(--color-text-secondary);
+}
+
+/* Hover effects — adjust glow for dark backgrounds */
+[data-theme="dark"] .hover-glow:hover {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.5),
+              0 0 40px rgba(99, 102, 241, 0.2);
+}
+
+/* Button secondary variant in dark mode */
+[data-theme="dark"] .btn--secondary {
+  background: var(--color-bg-primary);
+  border-color: var(--color-primary-light);
+}
+
+[data-theme="dark"] .btn--ghost:hover:not(:disabled) {
+  background: rgba(30, 41, 59, 0.7);
+}

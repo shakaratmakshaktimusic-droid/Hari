@@ -1,0 +1,35 @@
+/* ==========================================================================
+   Light Theme — Additional Component Overrides
+   Primary theme is handled via :root in variables.css.
+   This file provides any extra component-specific light-mode styling.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Light Theme — Explicit selector for programmatic switching
+   -------------------------------------------------------------------------- */
+[data-theme="light"] {
+  /* Card specifics for light mode */
+  --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+
+  /* Input focus glow in light mode */
+  --input-focus-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.06),
+                        inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+}
+
+/* Component overrides for light theme */
+[data-theme="light"] .calculator-card {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .result-card {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.1);
+}
+
+[data-theme="light"] .navbar {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .badge {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
