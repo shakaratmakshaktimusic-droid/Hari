@@ -1064,3 +1064,106 @@
     min-width: 50px;
   }
 }
+
+
+
+/* --------------------------------------------------------------------------
+   Date Input Group — Separate Day/Month/Year boxes with calendar picker
+   -------------------------------------------------------------------------- */
+.date-input-group {
+  margin-bottom: var(--space-6);
+}
+
+.date-input-boxes {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.date-input-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.date-input-box .input-field {
+  width: 70px;
+  text-align: center;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  padding: var(--space-3);
+}
+
+.date-input-box .date-input-year {
+  width: 90px;
+}
+
+.date-input-box-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: var(--font-weight-medium);
+}
+
+.date-input-calendar-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.date-input-native {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.date-input-calendar-btn {
+  font-size: var(--font-size-xl);
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-fast), background var(--transition-fast);
+}
+
+.date-input-calendar-btn:hover {
+  background: var(--glass-bg);
+  transform: scale(1.1);
+  box-shadow: var(--shadow-sm);
+}
+
+.date-input-today-btn {
+  font-size: var(--font-size-sm);
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.date-input-today-btn:hover {
+  background: rgba(99, 102, 241, 0.1);
+}
+
+/* Responsive: stack on mobile */
+@media (max-width: 480px) {
+  .date-input-boxes {
+    gap: var(--space-2);
+  }
+
+  .date-input-box .input-field {
+    width: 60px;
+    font-size: var(--font-size-base);
+  }
+
+  .date-input-box .date-input-year {
+    width: 75px;
+  }
+}

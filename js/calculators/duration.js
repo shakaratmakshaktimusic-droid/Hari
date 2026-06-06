@@ -2,9 +2,9 @@
  * Duration Calculator - Calculate the exact duration between two dates.
  * Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6
  */
-import { parseDate, formatDate } from '../core/date-parser.js';
+import { formatDate, validateDate } from '../core/date-parser.js';
 import { calculateDuration, getDayOfWeekName } from '../core/date-calc.js';
-import { validateDateInput } from '../core/validators.js';
+import DateInputComponent from '../ui/date-input.js';
 
 const DurationCalculator = {
   /**
@@ -22,7 +22,7 @@ const DurationCalculator = {
   },
 
   /**
-   * Render the calculator form with start/end date inputs,
+   * Render the calculator form with start/end date inputs using DateInputComponent,
    * include-end-date toggle, and calculate button.
    */
   _renderForm() {
@@ -30,39 +30,11 @@ const DurationCalculator = {
       <form id="duration-form" class="duration-form" novalidate>
         <div class="form-row">
           <div class="form-group form-group--half">
-            <label class="form-label" for="start-date">Start Date</label>
-            <div class="input-wrapper">
-              <input
-                type="text"
-                id="start-date"
-                class="input-field glass-input"
-                placeholder="MM/DD/YYYY or YYYY-MM-DD"
-                autocomplete="off"
-                aria-describedby="start-date-error"
-              />
-              <button type="button" class="btn btn--ghost btn--today" data-target="start-date" aria-label="Set start date to today">
-                Today
-              </button>
-            </div>
-            <span id="start-date-error" class="error-message" role="alert" hidden></span>
+            ${DateInputComponent.render({ id: 'start-date', label: 'Start Date' })}
           </div>
 
           <div class="form-group form-group--half">
-            <label class="form-label" for="end-date">End Date</label>
-            <div class="input-wrapper">
-              <input
-                type="text"
-                id="end-date"
-                class="input-field glass-input"
-                placeholder="MM/DD/YYYY or YYYY-MM-DD"
-                autocomplete="off"
-                aria-describedby="end-date-error"
-              />
-              <button type="button" class="btn btn--ghost btn--today" data-target="end-date" aria-label="Set end date to today">
-                Today
-              </button>
-            </div>
-            <span id="end-date-error" class="error-message" role="alert" hidden></span>
+            ${DateInputComponent.render({ id: 'end-date', label: 'End Date' })}
           </div>
         </div>
 
@@ -91,9 +63,12 @@ const DurationCalculator = {
   },
 
   /**
-   * Bind DOM event handlers for form submission, today buttons, and clear.
+   * Bind DOM event handlers for form submission and clear.
    */
   _bindEvents() {
+    // Initialize DateInputComponent listeners
+    DateInputComponent.initListeners(this._calculatorCard);
+
     const form = document.getElementById('duration-form');
     if (form) {
       form.addEventListener('submit', (e) => {
@@ -101,23 +76,6 @@ const DurationCalculator = {
         this.calculate();
       });
     }
-
-    // Today buttons
-    const todayButtons = this._calculatorCard.querySelectorAll('.btn--today');
-    todayButtons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const targetId = btn.getAttribute('data-target');
-        const input = document.getElementById(targetId);
-        if (input) {
-          const now = new Date();
-          const year = now.getFullYear();
-          const month = String(now.getMonth() + 1).padStart(2, '0');
-          const day = String(now.getDate()).padStart(2, '0');
-          input.value = `${year}-${month}-${day}`;
-          this._clearFieldError(targetId);
-        }
-      });
-    });
 
     // Clear button
     const clearBtn = document.getElementById('clear-btn');
@@ -134,32 +92,37 @@ const DurationCalculator = {
    */
   calculate() {
     // Clear previous errors
-    this._clearAllErrors();
+    DateInputComponent.clearError('start-date');
+    DateInputComponent.clearError('end-date');
 
-    const startInput = document.getElementById('start-date');
-    const endInput = document.getElementById('end-date');
     const includeEndCheckbox = document.getElementById('include-end-date');
-
-    const startValue = startInput ? startInput.value : '';
-    const endValue = endInput ? endInput.value : '';
     const includeEndDate = includeEndCheckbox ? includeEndCheckbox.checked : false;
 
+    // Get date values from DateInputComponent
+    const startDate = DateInputComponent.getValue('start-date');
+    const endDate = DateInputComponent.getValue('end-date');
+
     // Validate start date
-    const startValidation = validateDateInput(startValue, 'Start date');
+    if (!startDate) {
+      DateInputComponent.showError('start-date', 'Start date is required. Please fill in all fields.');
+      return;
+    }
+    const startValidation = validateDate(startDate.year, startDate.month, startDate.day);
     if (!startValidation.valid) {
-      this._showFieldError('start-date', startValidation.error);
+      DateInputComponent.showError('start-date', startValidation.error);
       return;
     }
 
     // Validate end date
-    const endValidation = validateDateInput(endValue, 'End date');
-    if (!endValidation.valid) {
-      this._showFieldError('end-date', endValidation.error);
+    if (!endDate) {
+      DateInputComponent.showError('end-date', 'End date is required. Please fill in all fields.');
       return;
     }
-
-    const startDate = startValidation.date;
-    const endDate = endValidation.date;
+    const endValidation = validateDate(endDate.year, endDate.month, endDate.day);
+    if (!endValidation.valid) {
+      DateInputComponent.showError('end-date', endValidation.error);
+      return;
+    }
 
     // Calculate duration
     const result = calculateDuration(startDate, endDate, includeEndDate);
@@ -269,59 +232,21 @@ const DurationCalculator = {
   },
 
   /**
-   * Show a validation error for a specific field.
-   * @param {string} fieldId - The input field ID
-   * @param {string} message - The error message to display
-   */
-  _showFieldError(fieldId, message) {
-    const input = document.getElementById(fieldId);
-    const errorEl = document.getElementById(`${fieldId}-error`);
-    if (input) {
-      input.classList.add('input-field--error');
-    }
-    if (errorEl) {
-      errorEl.textContent = message;
-      errorEl.hidden = false;
-    }
-  },
-
-  /**
-   * Clear the error state for a specific field.
-   * @param {string} fieldId - The input field ID
-   */
-  _clearFieldError(fieldId) {
-    const input = document.getElementById(fieldId);
-    const errorEl = document.getElementById(`${fieldId}-error`);
-    if (input) {
-      input.classList.remove('input-field--error');
-    }
-    if (errorEl) {
-      errorEl.textContent = '';
-      errorEl.hidden = true;
-    }
-  },
-
-  /**
-   * Clear all validation errors in the form.
-   */
-  _clearAllErrors() {
-    this._clearFieldError('start-date');
-    this._clearFieldError('end-date');
-  },
-
-  /**
    * Reset the form to its initial state.
    */
   _clearForm() {
-    const startInput = document.getElementById('start-date');
-    const endInput = document.getElementById('end-date');
-    const includeEndCheckbox = document.getElementById('include-end-date');
+    // Clear all input fields
+    ['start-date-day', 'start-date-month', 'start-date-year',
+     'end-date-day', 'end-date-month', 'end-date-year'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
 
-    if (startInput) startInput.value = '';
-    if (endInput) endInput.value = '';
+    const includeEndCheckbox = document.getElementById('include-end-date');
     if (includeEndCheckbox) includeEndCheckbox.checked = false;
 
-    this._clearAllErrors();
+    DateInputComponent.clearError('start-date');
+    DateInputComponent.clearError('end-date');
 
     if (this._resultCard) {
       this._resultCard.hidden = true;
