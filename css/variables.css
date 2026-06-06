@@ -132,8 +132,8 @@
   --color-text-secondary: #94a3b8;
 
   /* Glassmorphism - adjusted for dark backgrounds */
-  --glass-bg: rgba(30, 41, 59, 0.7);
-  --glass-border: rgba(100, 116, 139, 0.2);
+  --glass-bg: rgba(30, 41, 59, 0.8);
+  --glass-border: rgba(100, 116, 139, 0.3);
 
   /* Neumorphism - adjusted for dark backgrounds */
   --shadow-neu-light: 6px 6px 12px rgba(0, 0, 0, 0.4), -6px -6px 12px rgba(50, 60, 80, 0.15);

@@ -8,6 +8,111 @@
    Dark Theme — Component-specific overrides
    -------------------------------------------------------------------------- */
 
+/* Dark Mode — Complete dark background and element overrides */
+[data-theme="dark"] body,
+[data-theme="dark"] {
+  background-color: #0f172a !important;
+}
+
+[data-theme="dark"] .navbar {
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(100, 116, 139, 0.2);
+}
+
+[data-theme="dark"] .card,
+[data-theme="dark"] .glass-card,
+[data-theme="dark"] .calculator-card {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(100, 116, 139, 0.3);
+}
+
+[data-theme="dark"] .input-field,
+[data-theme="dark"] .glass-input {
+  background: #1e293b;
+  color: #f1f5f9;
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.3), inset -2px -2px 4px rgba(50, 60, 80, 0.1);
+}
+
+[data-theme="dark"] .input-field::placeholder {
+  color: #64748b;
+}
+
+[data-theme="dark"] .btn--secondary {
+  background: #1e293b;
+  color: #818cf8;
+  border-color: #818cf8;
+}
+
+[data-theme="dark"] .result-card {
+  background: rgba(30, 41, 59, 0.8);
+  border-left-color: #10b981;
+}
+
+[data-theme="dark"] .result-detail-row {
+  background: rgba(15, 23, 42, 0.6);
+  border-color: rgba(100, 116, 139, 0.2);
+}
+
+[data-theme="dark"] .tab {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .tab--active,
+[data-theme="dark"] .tab-btn--active {
+  color: #818cf8;
+  background: rgba(30, 41, 59, 0.8);
+}
+
+[data-theme="dark"] .weekday-checkbox__label {
+  background: rgba(30, 41, 59, 0.8);
+  color: #f1f5f9;
+  border-color: rgba(100, 116, 139, 0.3);
+}
+
+[data-theme="dark"] .mini-calendar {
+  background: rgba(15, 23, 42, 0.8);
+  border-color: rgba(100, 116, 139, 0.2);
+}
+
+[data-theme="dark"] .mini-cal-cell {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .countdown-card {
+  background: rgba(30, 41, 59, 0.8);
+}
+
+[data-theme="dark"] .toggle-track {
+  background: #475569;
+}
+
+[data-theme="dark"] .date-input-box-label {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .form-hint {
+  color: #64748b;
+}
+
+[data-theme="dark"] .batch-table {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .batch-table th {
+  background: rgba(15, 23, 42, 0.8);
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .batch-table tr:nth-child(even) {
+  background: rgba(30, 41, 59, 0.4);
+}
+
+[data-theme="dark"] select option {
+  background: #1e293b;
+  color: #f1f5f9;
+}
+
 /* Card styling adjustments for dark mode */
 [data-theme="dark"] .calculator-card {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -15,17 +120,10 @@
 }
 
 [data-theme="dark"] .result-card {
-  background: rgba(30, 41, 59, 0.9);
-  border-left-color: var(--color-success);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 /* Input fields in dark mode */
-[data-theme="dark"] .input-field {
-  background: var(--color-bg-secondary);
-  box-shadow: var(--shadow-neu-light);
-}
-
 [data-theme="dark"] .input-field:focus {
   box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.3),
               inset -4px -4px 8px rgba(50, 60, 80, 0.15);
@@ -67,12 +165,6 @@
 [data-theme="dark"] .hover-glow:hover {
   box-shadow: 0 0 20px rgba(99, 102, 241, 0.5),
               0 0 40px rgba(99, 102, 241, 0.2);
-}
-
-/* Button secondary variant in dark mode */
-[data-theme="dark"] .btn--secondary {
-  background: var(--color-bg-primary);
-  border-color: var(--color-primary-light);
 }
 
 [data-theme="dark"] .btn--ghost:hover:not(:disabled) {

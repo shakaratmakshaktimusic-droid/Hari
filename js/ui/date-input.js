@@ -183,6 +183,28 @@ const DateInputComponent = {
         if (errorEl) { errorEl.hidden = true; errorEl.textContent = ''; }
       });
     });
+
+    // Auto-tab: when day field has 2 digits, move focus to month
+    // When month field has 2 digits, move focus to year
+    container.querySelectorAll('.date-input-day').forEach(input => {
+      input.addEventListener('input', () => {
+        if (input.value.length >= 2) {
+          const id = input.id.replace('-day', '');
+          const monthEl = document.getElementById(`${id}-month`);
+          if (monthEl) monthEl.focus();
+        }
+      });
+    });
+
+    container.querySelectorAll('.date-input-month').forEach(input => {
+      input.addEventListener('input', () => {
+        if (input.value.length >= 2) {
+          const id = input.id.replace('-month', '');
+          const yearEl = document.getElementById(`${id}-year`);
+          if (yearEl) yearEl.focus();
+        }
+      });
+    });
   }
 };
 
