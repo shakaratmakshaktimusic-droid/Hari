@@ -882,3 +882,185 @@
 .result-calendar {
   margin-bottom: var(--space-6);
 }
+
+
+
+/* --------------------------------------------------------------------------
+   Countdown Timer — Card, Display, and Celebration Styles
+   -------------------------------------------------------------------------- */
+.countdown-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.countdown-form .form-row {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.countdown-form .form-group--third {
+  flex: 1;
+  min-width: 150px;
+}
+
+.countdown-start-btn {
+  min-width: 180px;
+}
+
+/* Countdowns List Container */
+.countdowns-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+/* Empty State */
+.countdown-empty {
+  text-align: center;
+  padding: var(--space-8);
+}
+
+.countdown-empty__text {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+}
+
+/* Countdown Card */
+.countdown-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.countdown-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-4);
+}
+
+.countdown-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.countdown-card__label {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.countdown-card__target {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.countdown-card__status {
+  align-self: flex-start;
+}
+
+.countdown-card__delete {
+  font-size: var(--font-size-xl);
+  color: var(--color-text-secondary);
+  padding: var(--space-2);
+  min-width: 36px;
+  min-height: 36px;
+  border-radius: var(--radius-full);
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.countdown-card__delete:hover {
+  color: var(--color-error);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* Past countdown - different styling */
+.countdown-card--past {
+  border-left: 4px solid var(--color-warning);
+  opacity: 0.85;
+}
+
+/* Countdown Display (DD:HH:MM:SS) */
+.countdown-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  padding: var(--space-4) 0;
+}
+
+.countdown-display--past .countdown-unit__value {
+  color: var(--color-warning);
+}
+
+.countdown-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 60px;
+}
+
+.countdown-unit__value {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown-unit__label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.countdown-separator {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-secondary);
+  align-self: flex-start;
+  margin-top: var(--space-2);
+}
+
+/* Celebration Container */
+.countdown-card__celebration {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.confetti-particle {
+  position: absolute;
+  animation: celebrate 0.8s ease-out forwards;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .countdown-form .form-row {
+    flex-direction: column;
+  }
+
+  .countdown-form .form-group--third {
+    min-width: 100%;
+  }
+
+  .countdown-unit__value {
+    font-size: var(--font-size-2xl);
+  }
+
+  .countdown-unit {
+    min-width: 50px;
+  }
+}

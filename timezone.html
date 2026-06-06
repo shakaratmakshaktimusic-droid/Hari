@@ -14,6 +14,269 @@
     <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/navigation.css">
     <link rel="stylesheet" href="css/responsive.css">
+    <style>
+      /* Timezone Converter specific styles */
+      .tz-autocomplete-wrapper {
+        position: relative;
+      }
+      .tz-autocomplete-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        max-height: 240px;
+        overflow-y: auto;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(99, 102, 241, 0.2);
+        border-radius: 0.75rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        margin-top: 0.25rem;
+      }
+      [data-theme="dark"] .tz-autocomplete-dropdown {
+        background: rgba(30, 30, 46, 0.95);
+        border-color: rgba(99, 102, 241, 0.3);
+      }
+      .tz-dropdown-item {
+        display: flex;
+        flex-direction: column;
+        padding: 0.625rem 1rem;
+        cursor: pointer;
+        transition: background 0.15s ease;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+      .tz-dropdown-item:last-child {
+        border-bottom: none;
+      }
+      .tz-dropdown-item:hover,
+      .tz-dropdown-item--active {
+        background: rgba(99, 102, 241, 0.1);
+      }
+      .tz-dropdown-city {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--text-primary, #1e1e2e);
+      }
+      .tz-dropdown-meta {
+        font-size: 0.75rem;
+        color: var(--text-secondary, #6b7280);
+        margin-top: 0.125rem;
+      }
+      .tz-dropdown-empty {
+        padding: 0.75rem 1rem;
+        color: var(--text-secondary, #6b7280);
+        font-size: 0.85rem;
+        text-align: center;
+      }
+      .target-zones-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+        min-height: 1.5rem;
+      }
+      .tz-target-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.375rem 0.75rem;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.15));
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        border-radius: 2rem;
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--text-primary, #1e1e2e);
+        animation: fadeIn 0.2s ease;
+      }
+      .tz-target-chip__remove {
+        background: none;
+        border: none;
+        color: var(--text-secondary, #6b7280);
+        cursor: pointer;
+        font-size: 1.1rem;
+        line-height: 1;
+        padding: 0 0.125rem;
+        border-radius: 50%;
+        transition: color 0.15s ease, background 0.15s ease;
+        min-width: 22px;
+        min-height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .tz-target-chip__remove:hover {
+        color: #ef4444;
+        background: rgba(239, 68, 68, 0.1);
+      }
+      .tz-hint {
+        font-size: 0.8rem;
+        color: var(--text-secondary, #6b7280);
+        font-style: italic;
+      }
+      .tz-no-targets {
+        text-align: center;
+        color: var(--text-secondary, #6b7280);
+        padding: 1rem;
+      }
+
+      /* Result Card Styles */
+      .tz-result-header {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+      }
+      .tz-result-source {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+      .tz-result-source__label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-secondary, #6b7280);
+        font-weight: 600;
+      }
+      .tz-result-source__zone {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-primary, #1e1e2e);
+      }
+      .tz-result-source__time {
+        font-size: 1.75rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .tz-result-source__date {
+        font-size: 0.85rem;
+        color: var(--text-secondary, #6b7280);
+      }
+      .tz-result-source__meta {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.25rem;
+      }
+      .tz-result-targets {
+        display: grid;
+        gap: 1rem;
+      }
+      .tz-result-target-card {
+        padding: 1rem 1.25rem;
+        background: rgba(99, 102, 241, 0.04);
+        border: 1px solid rgba(99, 102, 241, 0.12);
+        border-radius: 1rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .tz-result-target-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(99, 102, 241, 0.12);
+      }
+      .tz-result-target__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.25rem;
+      }
+      .tz-result-target__city {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--text-primary, #1e1e2e);
+      }
+      .tz-result-target__diff {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--text-secondary, #6b7280);
+        background: rgba(99, 102, 241, 0.08);
+        padding: 0.125rem 0.5rem;
+        border-radius: 1rem;
+      }
+      .tz-result-target__time {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary, #1e1e2e);
+        margin: 0.25rem 0;
+      }
+      .tz-result-target__date {
+        font-size: 0.8rem;
+        color: var(--text-secondary, #6b7280);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .tz-result-target__meta {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .tz-result-dst-note {
+        margin-top: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        background: rgba(245, 158, 11, 0.08);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        border-radius: 0.5rem;
+        font-size: 0.75rem;
+        color: var(--text-secondary, #6b7280);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      /* Badge styles */
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.125rem 0.5rem;
+        border-radius: 1rem;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .badge--dst {
+        background: rgba(245, 158, 11, 0.15);
+        color: #d97706;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+      }
+      .badge--standard {
+        background: rgba(34, 197, 94, 0.12);
+        color: #16a34a;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+      }
+      .badge--offset {
+        background: rgba(99, 102, 241, 0.1);
+        color: #6366f1;
+        border: 1px solid rgba(99, 102, 241, 0.2);
+      }
+      .badge--warning {
+        background: rgba(245, 158, 11, 0.15);
+        color: #d97706;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+      }
+      .badge--info {
+        background: rgba(59, 130, 246, 0.12);
+        color: #2563eb;
+        border: 1px solid rgba(59, 130, 246, 0.25);
+      }
+
+      .time-input-wrapper {
+        position: relative;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+      }
+
+      @media (max-width: 480px) {
+        .tz-result-target__time { font-size: 1.25rem; }
+        .tz-result-source__time { font-size: 1.4rem; }
+      }
+    </style>
 </head>
 <body>
     <!-- Navigation -->

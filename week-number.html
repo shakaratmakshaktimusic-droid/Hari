@@ -47,7 +47,7 @@
         <section class="calculator-section">
             <div class="container">
                 <h1 class="page-title">Week Number Calculator</h1>
-                <p class="page-subtitle">Find the ISO week number for any date</p>
+                <p class="page-subtitle">Find the ISO week number for any date and view full-year week calendars</p>
                 <div class="calculator-card card" id="calculator-card">
                     <!-- Calculator content will be rendered by JS -->
                 </div>
@@ -57,6 +57,224 @@
             </div>
         </section>
     </main>
+
+    <!-- Week Number Calculator Styles -->
+    <style>
+      .wn-calendar-container {
+        margin-top: var(--space-6, 1.5rem);
+      }
+
+      .wn-calendar {
+        background: var(--glass-bg, rgba(255, 255, 255, 0.7));
+        backdrop-filter: blur(var(--glass-blur, 20px));
+        -webkit-backdrop-filter: blur(var(--glass-blur, 20px));
+        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.3));
+        border-radius: 16px;
+        padding: var(--space-6, 1.5rem);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+
+      .wn-calendar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: var(--space-4, 1rem);
+      }
+
+      .wn-calendar-title {
+        font-size: var(--font-size-lg, 1.125rem);
+        font-weight: 600;
+        color: var(--color-text-primary, #1e293b);
+        margin: 0;
+      }
+
+      .wn-year-nav {
+        background: var(--glass-bg, rgba(255, 255, 255, 0.5));
+        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.3));
+        border-radius: 8px;
+        padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+        cursor: pointer;
+        transition: transform var(--transition-fast, 150ms ease), background var(--transition-fast, 150ms ease);
+        color: var(--color-text-primary, #1e293b);
+        font-size: var(--font-size-base, 1rem);
+        min-width: 44px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .wn-year-nav:hover {
+        transform: scale(1.05);
+        background: var(--color-primary-light, #818cf8);
+        color: #fff;
+      }
+
+      .wn-week-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+        gap: 6px;
+        margin-bottom: var(--space-4, 1rem);
+      }
+
+      .wn-week-cell {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--color-bg-primary, #f8fafc);
+        border: 1px solid transparent;
+        border-radius: 8px;
+        padding: var(--space-2, 0.5rem);
+        cursor: pointer;
+        transition: all var(--transition-fast, 150ms ease);
+        min-width: 44px;
+        min-height: 44px;
+        font-size: var(--font-size-sm, 0.875rem);
+        font-weight: 500;
+        color: var(--color-text-primary, #1e293b);
+      }
+
+      .wn-week-cell:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        border-color: var(--color-primary, #6366f1);
+        background: rgba(99, 102, 241, 0.08);
+      }
+
+      .wn-week-cell--current {
+        background: linear-gradient(135deg, #06b6d4, #0891b2);
+        color: #fff;
+        font-weight: 700;
+        border-color: transparent;
+        box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+      }
+
+      .wn-week-cell--current:hover {
+        background: linear-gradient(135deg, #06b6d4, #0e7490);
+        box-shadow: 0 6px 16px rgba(6, 182, 212, 0.4);
+      }
+
+      .wn-week-cell--selected {
+        background: var(--gradient-primary, linear-gradient(135deg, #6366f1, #ec4899));
+        color: #fff;
+        font-weight: 700;
+        border-color: transparent;
+        box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+        transform: scale(1.05);
+      }
+
+      .wn-week-cell--selected:hover {
+        transform: scale(1.08);
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+      }
+
+      .wn-week-cell--current.wn-week-cell--selected {
+        background: var(--gradient-primary, linear-gradient(135deg, #6366f1, #ec4899));
+        box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4), 0 0 0 3px rgba(6, 182, 212, 0.4);
+      }
+
+      .wn-week-cell-number {
+        font-variant-numeric: tabular-nums;
+      }
+
+      .wn-selected-detail {
+        background: var(--color-bg-primary, #f8fafc);
+        border-radius: 12px;
+        padding: var(--space-4, 1rem) var(--space-6, 1.5rem);
+        margin-top: var(--space-4, 1rem);
+        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.3));
+      }
+
+      .wn-selected-detail-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-3, 0.75rem);
+      }
+
+      .wn-selected-detail-week {
+        font-size: var(--font-size-xl, 1.25rem);
+        font-weight: 700;
+        color: var(--color-primary, #6366f1);
+      }
+
+      .wn-selected-detail-year {
+        font-size: var(--font-size-sm, 0.875rem);
+        color: var(--color-text-secondary, #64748b);
+        font-weight: 500;
+      }
+
+      .wn-selected-detail-range {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-4, 1rem);
+        flex-wrap: wrap;
+      }
+
+      .wn-selected-detail-date {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-1, 0.25rem);
+      }
+
+      .wn-date-label {
+        font-size: var(--font-size-xs, 0.75rem);
+        color: var(--color-text-secondary, #64748b);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+      }
+
+      .wn-date-value {
+        font-size: var(--font-size-base, 1rem);
+        font-weight: 600;
+        color: var(--color-text-primary, #1e293b);
+      }
+
+      .wn-range-arrow {
+        font-size: var(--font-size-lg, 1.125rem);
+      }
+
+      .wn-week-number {
+        font-size: var(--font-size-3xl, 2rem);
+        background: var(--gradient-primary, linear-gradient(135deg, #6366f1, #ec4899));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .wn-note {
+        background: rgba(245, 158, 11, 0.1);
+        border-radius: 8px;
+        padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+        margin-top: var(--space-2, 0.5rem);
+      }
+
+      @media (max-width: 768px) {
+        .wn-week-grid {
+          grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+          gap: 4px;
+        }
+
+        .wn-week-cell {
+          min-width: 40px;
+          min-height: 40px;
+          font-size: var(--font-size-xs, 0.75rem);
+          padding: var(--space-1, 0.25rem);
+        }
+
+        .wn-selected-detail-range {
+          flex-direction: column;
+          gap: var(--space-2, 0.5rem);
+        }
+
+        .wn-range-arrow {
+          transform: rotate(90deg);
+        }
+      }
+    </style>
 
     <!-- Scripts -->
     <script src="js/app.js" type="module"></script>
